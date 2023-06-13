@@ -25,6 +25,11 @@ config :austin_api, AustinApiWeb.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+  
+# Configure Guardian
+config :austin_api, AustinApiWeb.Auth.Guardian,
+  issuer: "austin_api",
+  secret_key: "hSLPQW+noiDXr2HGWxHha+TUJXzXwkYXXO/abMx8HXWDQBC7pVXtnxCDjuP6JGWz"
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

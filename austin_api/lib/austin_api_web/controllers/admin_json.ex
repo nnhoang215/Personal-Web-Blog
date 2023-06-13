@@ -19,7 +19,16 @@ defmodule AustinApiWeb.AdminJSON do
     %{
       id: admin.id,
       email: admin.email,
-      hash_password: admin.hash_password
+      hash_password: admin.hash_password,
+      inserted_at: admin.inserted_at #testing only
+    }
+  end
+  
+  def admin_token(%{admin: admin, token: token}) do
+    %{
+      id: admin.id,
+      email: admin.email,
+      token: token
     }
   end
 end

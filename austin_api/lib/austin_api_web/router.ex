@@ -8,5 +8,7 @@ defmodule AustinApiWeb.Router do
   scope "/api", AustinApiWeb do
     pipe_through :api
     get "/", DefaultController, :index
+    post "/admins/create", AdminController, :create
+    get "/get_account", AdminController, :index # testing only
   end
 end
