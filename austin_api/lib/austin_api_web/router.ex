@@ -17,7 +17,7 @@ defmodule AustinApiWeb.Router do
   
   pipeline :auth do
     plug AustinApiWeb.Auth.Pipeline
-    plug AustinApiWeb.Auth.SetAccount
+    plug AustinApiWeb.Auth.SetAdmin
   end
 
   scope "/api", AustinApiWeb do

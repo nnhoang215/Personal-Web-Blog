@@ -1,4 +1,4 @@
-defmodule AustinApiWeb.Auth.SetAccount do
+defmodule AustinApiWeb.Auth.SetAdmin do
   import Plug.Conn
   alias AustinApiWeb.Auth.ErrorResponse
   alias AustinApi.Admins
@@ -8,7 +8,7 @@ defmodule AustinApiWeb.Auth.SetAccount do
   end
   
   def call(conn, _options) do
-    if conn.assigns[:account] do
+    if conn.assigns[:admin] do
       conn
     else
       admin_id = get_session(conn, :admin_id)
