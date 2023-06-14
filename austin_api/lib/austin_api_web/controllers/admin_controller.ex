@@ -3,7 +3,7 @@ defmodule AustinApiWeb.AdminController do
 
   alias AustinApi.Admins
   alias AustinApi.Admins.Admin
-  alias AustinApiWeb.Auth.Guardian
+  alias AustinApiWeb.Auth.{Guardian, ErrorResponse}
 
   action_fallback AustinApiWeb.FallbackController
  
@@ -18,6 +18,17 @@ defmodule AustinApiWeb.AdminController do
       conn
       |> put_status(:created)
       |> render(:admin_token, %{admin: admin, token: token})
+    end
+  end
+  
+  #parsing json you gotta hash the password before sending it to the database to fend against mitm.
+  def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
+    case Guardian.authenticate(email, hash_password) do
+      {:ok, admin, token} ->
+        conn
+        |> put_status(:ok)
+        |> render(:admin_token, %{admin: admin, token: token})
+      {:error, :unauthorized} -> raise ErrorResponse.Unauthorized, message: "Email or Password incorrect"
     end
   end
 
