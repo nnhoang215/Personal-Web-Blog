@@ -13,6 +13,10 @@ defmodule AustinApiWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
   end
+  
+  pipeline :auth do
+    plug AustinApiWeb.Auth.Pipeline
+  end
 
   scope "/api", AustinApiWeb do
     pipe_through :api
@@ -20,5 +24,10 @@ defmodule AustinApiWeb.Router do
     post "/admins/create", AdminController, :create
     post "/admins/sign_in", AdminController, :sign_in
     get "/get_account", AdminController, :index # testing only
+  end
+  
+  scope "/api", AustinApiWeb do
+    pipe_through [:api, :auth] #anything that's called here will have to run through the pipeline in order to run
+    get "/admins/by_id/:id", AdminController, :show
   end
 end
