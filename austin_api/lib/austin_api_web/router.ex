@@ -12,10 +12,12 @@ defmodule AustinApiWeb.Router do
   
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session # this is to fetch the session
   end
   
   pipeline :auth do
     plug AustinApiWeb.Auth.Pipeline
+    plug AustinApiWeb.Auth.SetAccount
   end
 
   scope "/api", AustinApiWeb do

@@ -26,6 +26,7 @@ defmodule AustinApiWeb.AdminController do
     case Guardian.authenticate(email, hash_password) do
       {:ok, admin, token} ->
         conn
+        |> Plug.Conn.put_session(:admin_id, admin.id)
         |> put_status(:ok)
         |> render(:admin_token, %{admin: admin, token: token})
       {:error, :unauthorized} -> raise ErrorResponse.Unauthorized, message: "Email or Password incorrect"
@@ -35,6 +36,7 @@ defmodule AustinApiWeb.AdminController do
   def show(conn, %{"id" => id}) do
     admin = Admins.get_admin!(id)
     render(conn, :show, admin: admin)
+    # render(conn, :show, admin: conn.assigns.admin)
   end
 
   def update(conn, %{"id" => id, "admin" => admin_params}) do
