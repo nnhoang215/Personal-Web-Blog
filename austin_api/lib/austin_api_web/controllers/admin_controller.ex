@@ -25,16 +25,17 @@ defmodule AustinApiWeb.AdminController do
   end
 
   def create(conn, %{"admin" => admin_params}) do
-    with {:ok, %Admin{} = admin} <- Admins.create_admin(admin_params),
-      {:ok, token, _claims} <- Guardian.encode_and_sign(admin) do
-      conn
-      |> put_status(:created)
-      |> render(:admin_token, %{admin: admin, token: token})
+    with {:ok, %Admin{} = admin} <- Admins.create_admin(admin_params) do
+      authorize_admin(conn, admin.email, admin_params["hash_password"]) 
     end
   end
   
   #parsing json you gotta hash the password before sending it to the database to fend against mitm.
   def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
+    authorize_admin(conn, email, hash_password)
+  end 
+  
+  defp authorize_admin(conn, email, hash_password) do
     case Guardian.authenticate(email, hash_password) do
       {:ok, admin, token} ->
         conn
@@ -46,22 +47,12 @@ defmodule AustinApiWeb.AdminController do
   end
 
   def refresh_session(conn, %{}) do
-    old_token = Guardian.Plug.current_token(conn)
-    case Guardian.decode_and_verify(old_token) do
-      {:ok, claims} ->
-        case Guardian.resource_from_claims(claims) do
-          {:ok, admin}-> 
-            {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
-              conn
-              |> Plug.Conn.put_session(:admin_id, admin.id)
-              |> put_status(:ok)
-              |> render(:admin_token, %{admin: admin, token: new_token})
-          {:error, _reason} ->
-            raise ErrorResponse.NotFound
-        end
-      {:error, _reasons} ->
-        raise ErrorResponse.NotFound
-    end
+    token = Guardian.Plug.current_token(conn)
+    {:ok, admin, new_token} = Guardian.authenticate(token)
+    conn
+    |> Plug.Conn.put_session(:admin_id, admin.id)
+    |> put_status(:ok)
+    |> render(:admin_token, %{admin: admin, token: new_token})
   end
   
   def sign_out(conn, %{}) do

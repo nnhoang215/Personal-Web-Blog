@@ -27,9 +27,18 @@ defmodule AustinApiWeb.Auth.Guardian do
       nil -> {:error, :unauthorized}
       admin ->
         case validate_password(password, admin.hash_password) do
-          true -> create_token(admin)
+          true -> create_token(admin, :access)
           false -> {:error, :unauthorized}
         end
+    end
+  end
+  
+  def authenticate(token) do
+    with {:ok, claims} <- decode_and_verify(token),
+        {:ok, admin} <- resource_from_claims(claims),
+        {:ok, _old, {new_token, _claims}} <- refresh(token) do
+          
+      {:ok, admin, new_token}      
     end
   end
   
@@ -37,9 +46,16 @@ defmodule AustinApiWeb.Auth.Guardian do
     Bcrypt.verify_pass(password, hash_password)
   end
   
-  def create_token(admin) do
-    {:ok, token, _claims} = encode_and_sign(admin)
+  def create_token(admin, type) do
+    {:ok, token, _claims} = encode_and_sign(admin, %{}, token_options(type))
     {:ok, admin, token}
+  end
+  
+  defp token_options(type) do
+    case type do
+      :access -> [token_type: "access", ttl: {2, :hour}]
+      :reset -> [token_type: "reset", ttl: {15, :minute}]
+    end
   end
   
   def after_encode_and_sign(resource, claims, token, _options) do
