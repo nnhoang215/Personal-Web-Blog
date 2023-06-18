@@ -45,6 +45,25 @@ defmodule AustinApiWeb.AdminController do
     end
   end
 
+  def refresh_session(conn, %{}) do
+    old_token = Guardian.Plug.current_token(conn)
+    case Guardian.decode_and_verify(old_token) do
+      {:ok, claims} ->
+        case Guardian.resource_from_claims(claims) do
+          {:ok, admin}-> 
+            {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
+              conn
+              |> Plug.Conn.put_session(:admin_id, admin.id)
+              |> put_status(:ok)
+              |> render(:admin_token, %{admin: admin, token: new_token})
+          {:error, _reason} ->
+            raise ErrorResponse.NotFound
+        end
+      {:error, _reasons} ->
+        raise ErrorResponse.NotFound
+    end
+  end
+  
   def sign_out(conn, %{}) do
     admin = conn.assigns[:admin] # what if this was manually swept before signing out?
     token = Guardian.Plug.current_token(conn)

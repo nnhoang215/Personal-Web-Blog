@@ -32,6 +32,7 @@ defmodule AustinApiWeb.Router do
     pipe_through [:api, :auth] #anything that's called here will have to run through the pipeline in order to run
     get "/admins/by_id/:id", AdminController, :show
     get "/admins/sign_out", AdminController, :sign_out
+    get "/admins/refresh_session", AdminController, :refresh_session
     post "/admins/update", AdminController, :update
   end
 end
