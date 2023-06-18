@@ -34,6 +34,11 @@ config :austin_api, AustinApiWeb.Auth.Guardian,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :guardian, Guardian.DB,
+  repo: AustinApi.Repo,
+  schema_name: "guardian_tokens",
+  sweep_interval: 60 # how much time b4 the token gets swept
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
