@@ -19,7 +19,7 @@ defmodule AustinApi.Admins.Admin do
     |> cast(attrs, [:email, :hash_password])
     |> validate_required([:email, :hash_password])
     |> put_password_hash()
-    # need more validation for email eg: format, length, unique
+    # TODO: need more validation for email eg: format, length, unique
   end
   
   defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{hash_password: hash_password}} = changeset) do

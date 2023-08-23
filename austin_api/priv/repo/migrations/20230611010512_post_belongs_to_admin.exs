@@ -3,7 +3,7 @@ defmodule AustinApi.Repo.Migrations.PostBelongsToAdmin do
 
   def change do
     alter table (:posts) do
-      add :admin_id, references(:admins, type: :binary_id) 
+      add :admin_id, references(:admins, type: ) 
     end
   end
 end

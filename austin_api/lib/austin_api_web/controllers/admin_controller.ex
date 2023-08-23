@@ -26,7 +26,7 @@ defmodule AustinApiWeb.AdminController do
 
   def create(conn, %{"admin" => admin_params}) do
     with {:ok, %Admin{} = admin} <- Admins.create_admin(admin_params) do
-      authorize_admin(conn, admin.email, admin_params["hash_password"]) 
+      authorize_admin(conn, admin.email, admin_params["hash_password"])
     end
   end
   

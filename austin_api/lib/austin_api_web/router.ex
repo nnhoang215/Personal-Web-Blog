@@ -34,5 +34,7 @@ defmodule AustinApiWeb.Router do
     get "/admins/sign_out", AdminController, :sign_out
     get "/admins/refresh_session", AdminController, :refresh_session
     post "/admins/update", AdminController, :update
+    post "/posts/create", PostController, :create
+    post "/tags/create", TagController, :create
   end
 end

@@ -9,6 +9,7 @@ defmodule AustinApi.Posts.Post do
     field :published_at, :date
     field :subtitle, :string
     field :title, :string
+    has_many :tags, AustinApi.Tags.Tag
     belongs_to :admins, AustinApi.Admins.Admin
 
     timestamps()
