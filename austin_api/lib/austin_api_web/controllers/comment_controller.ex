@@ -15,7 +15,7 @@ defmodule AustinApiWeb.CommentController do
     with {:ok, %Comment{} = comment} <- Comments.create_comment(comment_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/comments/#{comment}")
+      # |> put_resp_header("location", ~p"/api/comments/#{comment}")
       |> render(:show, comment: comment)
     end
   end

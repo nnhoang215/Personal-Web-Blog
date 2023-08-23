@@ -9,7 +9,7 @@ defmodule AustinApi.Admins.Admin do
     field :hash_password, :string
     has_many :posts, AustinApi.Posts.Post
     has_many :comments, AustinApi.Comments.Comment
-
+    
     timestamps()
   end
 

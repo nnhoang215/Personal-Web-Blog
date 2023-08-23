@@ -7,9 +7,8 @@ defmodule AustinApi.Comments.Comment do
   schema "comments" do
     field :content, :string
     field :published_at, :date
-    belongs_to :posts, AustinApi.Posts.Post
-    belongs_to :admins, AustinApi.Admins.Admin
-
+    belongs_to :post, AustinApi.Posts.Post
+    belongs_to :admin, AustinApi.Comments.Comment
     timestamps()
   end
 
